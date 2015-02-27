@@ -16,6 +16,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Calendar;
+
 import android.os.Handler;
 import android.os.HandlerThread;
 
@@ -95,10 +97,24 @@ public class PhoneMainActivity extends Activity implements Button.OnClickListene
                 mCheckIP();
                 break;
             case R.id.btnAutoConnect:
+                btnAutoConnect.setEnabled(false);
                 mAutoConnection();
                 break;
         }
     }
+
+
+    private Runnable tbtnEnble=new Runnable() {
+        @Override
+        public void run() {
+
+            Button btn = (Button)findViewById(R.id.btnAutoConnect);
+            btn.setEnabled(true);
+
+
+        }
+    };
+
 
     // 方法:判斷ip
     private void mCheckIP(){
@@ -163,6 +179,8 @@ public class PhoneMainActivity extends Activity implements Button.OnClickListene
 
     // 方法:自動搜尋
     private void mAutoConnection(){
+
+
         // 如thread存在則移除它
         if(mThread!=null) mThread.interrupt();
 
@@ -171,6 +189,8 @@ public class PhoneMainActivity extends Activity implements Button.OnClickListene
         mThread.start();
         mThreadHandler = new Handler(mThread.getLooper());
         mThreadHandler.post(tSendBrocast);
+
+
     }
 
     // 執行緒:廣播本機IP
@@ -222,6 +242,10 @@ public class PhoneMainActivity extends Activity implements Button.OnClickListene
     private Runnable tReciveFromPc=new Runnable() {
         @Override
         public void run() {
+
+            //mUIHandler.post(tbtnEnble);
+            mUIHandler.postDelayed(tbtnEnble,5000);
+
             String in;
             ServerSocket ss=null;
             Socket cs=null;
